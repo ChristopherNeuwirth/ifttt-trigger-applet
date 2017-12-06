@@ -5,7 +5,7 @@ let core = module.exports = {};
  * @param {String} url
  * @param {Object} header
  */
-core.setOptions = function (url, header) {
+core.setOptions = function(url, header) {
   return {
       url: url,
       method: 'POST',
@@ -18,7 +18,7 @@ core.setOptions = function (url, header) {
  * Sets the url based on the environment (prod, dev) and triggers the specific app.
  * @param {String} env
  */
-core.setUrl = function (env) {
+core.setUrl = function(env) {
   let appId;
 
   try {
@@ -37,4 +37,14 @@ core.setUrl = function (env) {
     process.exit(1);
   }
 
+}
+
+/**
+ * Terminate application after a given time.
+ * @param  {Integer} time Milliseconds
+ */
+core.terminate = function(time) {
+  setTimeout(() => {
+    process.exit(0);
+  }, time);
 }

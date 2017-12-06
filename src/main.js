@@ -40,4 +40,6 @@ async function doRequest() {
 const wrappedFunction = catchErrors(doRequest);
 
 wrappedFunction();
-setInterval(wrappedFunction, 10000);
+setInterval(wrappedFunction, 60000); // 1 min
+
+coreLib.terminate(2700000); // 45 min
