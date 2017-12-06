@@ -37,5 +37,7 @@ async function doRequest() {
  * Main Application
  * First the options are set based on the environment (prod, dev) and then the request is triggered.
  */
-const wrappedFunction = catchErrors(doRequest)();
+const wrappedFunction = catchErrors(doRequest);
+
+wrappedFunction();
 setInterval(wrappedFunction, 10000);
