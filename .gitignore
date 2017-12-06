@@ -1,0 +1,15 @@
+
+logs/
+*.log
+npm-debug.log*
+
+node_modules/
+dist/
+target/
+.idea/
+
+environment/.env
+environment/ifttt.header.json
+environment/client_secret.json
+
+curl.txt
