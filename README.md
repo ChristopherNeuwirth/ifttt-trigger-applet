@@ -1,4 +1,4 @@
-# Schmatzfein Food
+# IFTTT Trigger Applet 
 
 ## Getting started
 
