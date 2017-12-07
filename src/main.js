@@ -21,6 +21,13 @@ options = coreLib.setOptions(
 function catchErrors(fn) {
   return function (name) {
     return fn(name).catch((err) => {
+
+      // api returns 422 if the applet is triggered by ifttt itself.
+      // The app should not stop if this case occurs. 
+      if(err.statusCode === 422) {
+        return;
+      }
+
       console.error(err.statusCode, err.statusMessage);
       process.exit(1);
     });
