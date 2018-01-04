@@ -1,5 +1,5 @@
 {
-  "name": "omnomnom",
+  "name": "ifttt-trigger-applet",
   "files": [
     "environment/.env",
     "environment/ifttt.header.json",
