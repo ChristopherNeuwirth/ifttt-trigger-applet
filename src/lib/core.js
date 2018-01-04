@@ -45,6 +45,7 @@ core.setUrl = function(env) {
  */
 core.terminate = function(time) {
   setTimeout(() => {
+    console.log('Application terminated due to time limit.');
     process.exit(0);
   }, time);
 }

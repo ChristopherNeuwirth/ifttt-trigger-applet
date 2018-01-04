@@ -4,7 +4,6 @@
   "description": "Trigger ifttt applets by node.",
   "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ENV=PROD node src/main.js",
     "start:dev": "ENV=DEV node src/main.js"
   },

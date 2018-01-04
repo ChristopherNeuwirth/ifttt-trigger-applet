@@ -46,6 +46,7 @@ async function doRequest() {
  */
 const wrappedFunction = catchErrors(doRequest);
 
+console.log('Starting ...');
 wrappedFunction();
 setInterval(wrappedFunction, 60000); // 1 min
 
