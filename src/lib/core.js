@@ -5,7 +5,11 @@ let core = module.exports = {};
  * @param {String} url
  * @param {Object} header
  */
-core.setOptions = function(url, header) {
+core.setOptions = function(url, header, secret) {
+  header['x-csrf-token'] = secret.token;
+  header['cookie']       = secret.cookie;
+  header['referer']      = secret.referer;
+
   return {
       url: url,
       method: 'POST',

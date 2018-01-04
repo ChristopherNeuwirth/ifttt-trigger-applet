@@ -10,11 +10,17 @@ require('dotenv').config({path: path.resolve(__dirname, '..', 'environment/.env'
 // base config.
 let options = {};
 let environment = process.env.ENV;
+let secretHeaderInformation = {
+  token: process.env.TOKEN,
+  cookie: process.env.COOKIE,
+  referer: process.env.REFERER
+};
 
 // config the options object based on environment.
 options = coreLib.setOptions(
   coreLib.setUrl(environment),
-  httpHeader
+  httpHeader,
+  secretHeaderInformation
 );
 
 // global catch errors wrapper.
