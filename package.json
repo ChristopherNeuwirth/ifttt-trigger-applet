@@ -1,6 +1,6 @@
 {
   "name": "ifttt-trigger-applet",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Trigger ifttt applets by node.",
   "main": "src/main.js",
   "scripts": {
