@@ -1,0 +1,12 @@
+{
+  "name": "omnomnom",
+  "files": [
+    "environment/.env",
+    "environment/ifttt.header.json",
+    "src/main.js",
+    "src/lib/core.js"
+  ],
+  "engines": {
+    "node": "^8.0.0"
+  }
+}
