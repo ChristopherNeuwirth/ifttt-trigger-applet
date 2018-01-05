@@ -1,0 +1,12 @@
+{
+  "name": "ifttt-trigger-applet",
+  "dotenv": true,
+  "files": [
+    "src/**",
+    "environment/ifttt.header.json",
+    "index.js"
+  ],
+  "engines": {
+    "node": "^8.0.0"
+  }
+}
