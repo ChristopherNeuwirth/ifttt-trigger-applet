@@ -28,7 +28,7 @@ core.setUrl = function(env) {
   try {
     if(env === 'PROD') {
        appId = process.env.APPIDPROD;
-    } else {
+    } else if (env === 'DEV') {
       appId = process.env.APPIDDEV;
     }
     if(!appId) {
