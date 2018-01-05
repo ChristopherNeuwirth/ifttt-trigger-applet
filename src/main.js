@@ -73,7 +73,7 @@ let range = moment.range(startTime, endTime);
 
 let cronLog = true;
 
-console.log(`[LOG]     ${now()}: 🚀  Omnomnom Cronjob started.`);
+console.log(`[LOG]     ${now()}: 🚀  Omnomnom ${process.env.ENV} Cronjob started.`);
 
 schedule.scheduleJob({
   rule: '*/1 * * * 1-5' 
