@@ -39,7 +39,7 @@ function catchErrors(fn) {
         return;
       }
 
-      console.error(`[ERROR]   ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 🚨  ${err.statusCode} ${err.statusMessage}`);
+      console.error(`[ERROR]   ${now()}: 🚨  ${err.statusCode} ${err.statusMessage}`);
       process.exit(1);
     });
   }
@@ -48,7 +48,12 @@ function catchErrors(fn) {
 // actual request.
 async function doRequest() {
   const response = await request(options);
-  console.log(`[SUCCESS] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: ✅  ${response.statusCode} ${response.statusMessage}`);
+  console.log(`[SUCCESS] ${now()}: ✅  ${response.statusCode} ${response.statusMessage}`);
+}
+
+// returns the current time with prefered configuration
+function now() {
+  return moment().utc(1).format('YYYY-MM-DD HH:mm');
 }
 
 /**
@@ -68,7 +73,7 @@ let range = moment.range(startTime, endTime);
 
 let cronLog = true;
 
-console.log(`[LOG]     ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 🚀  Omnomnom Cronjob started.`);
+console.log(`[LOG]     ${now()}: 🚀  Omnomnom Cronjob started.`);
 
 schedule.scheduleJob({
   rule: '*/1 * * * 1-5' 
@@ -76,18 +81,18 @@ schedule.scheduleJob({
 
   if(range.contains(moment().utc(1)) && !cronLog) {
     cronLog = true;
-    if(cronLog) console.log(`[LOG]     ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 🌈  Daily Breakfast time reached again.`);
+    if(cronLog) console.log(`[LOG]     ${now()}: 🌈  Daily Breakfast time reached again.`);
   }
 
   if(range.contains(moment().utc(1))) {
-    if(cronLog) console.log(`[LOG]     ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 📨  Checking Mailbox...`);
+    if(cronLog) console.log(`[LOG]     ${now()}: 📨  Checking Mailbox...`);
     wrappedFunction();
   } else {
-    if(cronLog) console.warn(`[WARN]    ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: ☝️  Breakfast Time is Over.`);
+    if(cronLog) console.warn(`[WARN]    ${now()}: ☝️  Breakfast Time is Over.`);
   }
 
   if(moment().utc(1) > endTime) {
-    if(cronLog) console.warn(`[WARN]    ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 💤  Daily Endtime reached. Going to sleep. `);
+    if(cronLog) console.warn(`[WARN]    ${now()}: 💤  Daily Endtime reached. Going to sleep. `);
     cronLog = false;
   }
   
