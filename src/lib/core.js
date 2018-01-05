@@ -30,9 +30,8 @@ core.setUrl = function(env) {
        appId = process.env.APPIDPROD;
     } else if (env === 'DEV') {
       appId = process.env.APPIDDEV;
-    }
-    if(!appId) {
-      throw 'Error: No app environment set';
+    } else {
+      throw '[Error] No app environment set';
     }
     return process.env.BASE + process.env.URL + appId + process.env.ENDPOINT;
 
