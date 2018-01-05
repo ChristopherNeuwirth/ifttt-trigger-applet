@@ -39,7 +39,7 @@ function catchErrors(fn) {
         return;
       }
 
-      console.error(`[ERROR] ${moment().utc(1).format('YYYY-MM-DD HH:mm')} ${err.statusCode} ${err.statusMessage}`);
+      console.error(`[ERROR]   ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 🚨  ${err.statusCode} ${err.statusMessage}`);
       process.exit(1);
     });
   }
@@ -48,7 +48,7 @@ function catchErrors(fn) {
 // actual request.
 async function doRequest() {
   const response = await request(options);
-  console.log(`[SUCCESS] ${moment().utc(1).format('YYYY-MM-DD HH:mm')} ${response.statusCode} ${response.statusMessage}`);
+  console.log(`[SUCCESS] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: ✅  ${response.statusCode} ${response.statusMessage}`);
 }
 
 /**
@@ -61,25 +61,43 @@ const wrappedFunction = catchErrors(doRequest);
 let startTime = moment({hour: 9, minute: 45}).utc(1);
 let endTime = moment(startTime).add(45, 'minutes');
 
+// Debug:
+//let endTime = moment({hour: 11, minute: 27}).utc(1);
+
 let range = moment.range(startTime, endTime);
 
-console.log(`[LOG] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: Omnomnom Cronjob started.`);
+let cronLog = true;
+
+console.log(`[LOG]     ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 🚀  Omnomnom Cronjob started.`);
+
 schedule.scheduleJob({
   rule: '*/1 * * * 1-5' 
 }, () => {
 
-  let cronLog = true;
-
-  if(range.contains(moment().utc(1))) {
-    if(cronLog) console.log(`[LOG] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: Checking Mailbox... `);
-    wrappedFunction();
-  } else {
-    if(cronLog) console.error(`[ERROR] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: Breakfast Time is Over.`);
+  if(range.contains(moment().utc(1)) && !cronLog) {
+    cronLog = true;
+    if(cronLog) console.log(`[LOG]     ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 🌈  Daily Breakfast time reached again.`);
   }
 
-  // if(moment().utc(1) > endTime) {
-  //   if(cronLog) console.log(`[LOG] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: Daily Endtime reached. Going to sleep. `);
-  //   cronLog = false;
-  // }
+  if(range.contains(moment().utc(1))) {
+    if(cronLog) console.log(`[LOG]     ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 📨  Checking Mailbox...`);
+    wrappedFunction();
+  } else {
+    if(cronLog) console.warn(`[WARN]    ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: ☝️  Breakfast Time is Over.`);
+  }
+
+  if(moment().utc(1) > endTime) {
+    if(cronLog) console.warn(`[WARN]    ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: 💤  Daily Endtime reached. Going to sleep. `);
+    cronLog = false;
+  }
   
 });
+
+
+// Debug:
+// setTimeout(() => {
+//   startTime = moment().utc(1);
+//   endTime = moment(startTime).add(3, 'minutes');
+//   range = moment.range(startTime, endTime);
+//   console.log('changed range!', range);
+// }, 300000);
