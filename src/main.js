@@ -2,8 +2,13 @@ let fs = require('fs');
 let path = require('path');
 let util = require('util'); // console.log(util.inspect(myObject, false, null));
 let request = require('request-promise');
+let schedule = require('node-schedule'); // for doc see: https://github.com/node-schedule/node-schedule
 let httpHeader = require('../environment/ifttt.header.json');
 let coreLib = require('./lib/core');
+
+let Moment = require('moment');
+let MomentRange = require('moment-range');
+let moment = MomentRange.extendMoment(Moment);
 
 require('dotenv').config({path: path.resolve(__dirname, '..', 'environment/.env')});
 
@@ -34,7 +39,7 @@ function catchErrors(fn) {
         return;
       }
 
-      console.error(err.statusCode, err.statusMessage);
+      console.error(`[ERROR] ${moment().utc(1).format('YYYY-MM-DD HH:mm')} ${err.statusCode} ${err.statusMessage}`);
       process.exit(1);
     });
   }
@@ -43,7 +48,7 @@ function catchErrors(fn) {
 // actual request.
 async function doRequest() {
   const response = await request(options);
-  console.log(response.statusCode, response.statusMessage);
+  console.log(`[SUCCESS] ${moment().utc(1).format('YYYY-MM-DD HH:mm')} ${response.statusCode} ${response.statusMessage}`);
 }
 
 /**
@@ -52,8 +57,20 @@ async function doRequest() {
  */
 const wrappedFunction = catchErrors(doRequest);
 
-console.log('Starting ...');
-wrappedFunction();
-setInterval(wrappedFunction, 60000); // 1 min
+// Mo - Fr, 9:45 - 10:30, every minute
+let startTime = moment({hour: 9, minute: 45}).utc(1);
+let endTime = moment(startTime).add(45, 'minutes');
 
-coreLib.terminate(2700000); // 45 min
+let range = moment.range(startTime, endTime);
+
+console.log(`[LOG] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: Omnomnom Cronjob started.`);
+schedule.scheduleJob({
+  rule: '*/1 * * * 1-5' 
+}, () => {
+
+  if(range.contains(moment().utc(1))) {
+    console.log(`[LOG] ${now.format('YYYY-MM-DD HH:mm')}: Checking Mailbox... `);
+    wrappedFunction();
+  } 
+  
+});
