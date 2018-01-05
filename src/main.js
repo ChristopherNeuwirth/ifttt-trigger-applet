@@ -68,9 +68,18 @@ schedule.scheduleJob({
   rule: '*/1 * * * 1-5' 
 }, () => {
 
+  let cronLog = true;
+
   if(range.contains(moment().utc(1))) {
-    console.log(`[LOG] ${now.format('YYYY-MM-DD HH:mm')}: Checking Mailbox... `);
+    if(cronLog) console.log(`[LOG] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: Checking Mailbox... `);
     wrappedFunction();
-  } 
+  } else {
+    if(cronLog) console.error(`[ERROR] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: Breakfast Time is Over.`);
+  }
+
+  // if(moment().utc(1) > endTime) {
+  //   if(cronLog) console.log(`[LOG] ${moment().utc(1).format('YYYY-MM-DD HH:mm')}: Daily Endtime reached. Going to sleep. `);
+  //   cronLog = false;
+  // }
   
 });
