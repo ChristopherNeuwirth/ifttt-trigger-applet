@@ -1,4 +1,4 @@
-# IFTTT Trigger Applet 
+# IFTTT Trigger Applet - with now Deployment
 
 ## Getting started
 
@@ -26,5 +26,21 @@ npm run start
 Trigger app for development:
 
 ```
-npm run start:dev
+npm run dev
+```
+
+
+## Now deployment 
+
+Deploy
+```
+now --dotenv environment/.env --public
+now scale [ID_GIVEN] 1
+
+curl [ID_GIVEN]
+```
+
+Check Logs
+```
+now logs [ID_GIVEN] 
 ```
