@@ -2,6 +2,8 @@ let fork = require('child_process').fork;
 let path = require('path');
 require('dotenv').config({path: path.resolve(__dirname, 'environment/.env')});
 
+// TODO: Check if already running and kill it to avoid running certain instances
+
 module.exports = (req, res) => {
 
   fork('./src/main.js', [], {
