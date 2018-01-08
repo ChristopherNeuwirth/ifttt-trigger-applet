@@ -1,3 +1,4 @@
+let _moment = undefined;
 let core = module.exports = {};
 
 /**
@@ -5,7 +6,7 @@ let core = module.exports = {};
  * @param {String} url
  * @param {Object} header
  */
-core.setOptions = function(url, header, secret) {
+core.setOptions = (url, header, secret) => {
   header['x-csrf-token'] = secret.token;
   header['cookie']       = secret.cookie;
   header['referer']      = secret.referer;
@@ -22,7 +23,7 @@ core.setOptions = function(url, header, secret) {
  * Sets the url based on the environment (prod, dev) and triggers the specific app.
  * @param {String} env
  */
-core.setUrl = function(env) {
+core.setUrl = (env) => {
   let appId;
 
   try {
@@ -42,3 +43,21 @@ core.setUrl = function(env) {
 
 }
 
+/**
+ * Provides the momentJs object to the coreLib
+ * @param {Object} momentJs instance 
+ */
+core.configCore = (moment) => {
+  _moment = moment;
+}
+
+/**
+ * Returns the current time with prefered configuration 
+ * @param {Object} certainMoment e.g. {hour: 9, minute: 45} 
+ */
+core.now = (certainMoment) => {
+  // TODO: Add summer-time + 1
+  return certainMoment ? 
+    _moment.utc(certainMoment).format('YYYY-MM-DD HH:mm') :
+    _moment.utc().utcOffset('+01:00').format('YYYY-MM-DD HH:mm');
+}
