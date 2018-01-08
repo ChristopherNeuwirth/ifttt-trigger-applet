@@ -44,3 +44,15 @@ Check Logs
 ```
 now logs [ID_GIVEN] 
 ```
+
+## Job Handling
+
+Restart the Job
+```
+curl [ID_GIVEN] -H 'action: RESTART'
+```
+
+Receive Information about the Job
+```
+curl [ID_GIVEN] -H 'action: INFO'
+```
