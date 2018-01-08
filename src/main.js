@@ -52,8 +52,11 @@ async function doRequest() {
 }
 
 // returns the current time with prefered configuration
-function now() {
-  return moment().utc(1).format('YYYY-MM-DD HH:mm');
+function now(certainMoment) {
+  // TODO: Add summer-time + 1
+  return certainMoment ? 
+    moment.utc(certainMoment).format('YYYY-MM-DD HH:mm') :
+    moment.utc().utcOffset('+01:00').format('YYYY-MM-DD HH:mm');
 }
 
 /**
@@ -63,11 +66,8 @@ function now() {
 const wrappedFunction = catchErrors(doRequest);
 
 // Mo - Fr, 9:45 - 10:30, every minute
-let startTime = moment({hour: 9, minute: 45}).utc(1);
-let endTime = moment(startTime).add(45, 'minutes');
-
-// Debug:
-//let endTime = moment({hour: 11, minute: 27}).utc(1);
+let startTime = now({hour: 9, minute: 35});
+let endTime = now({hour: 10, minute: 30});
 
 let range = moment.range(startTime, endTime);
 
@@ -79,30 +79,22 @@ schedule.scheduleJob({
   rule: '*/1 * * * 1-5' 
 }, () => {
 
-  if(range.contains(moment().utc(1)) && !cronLog) {
+  if(range.contains(now()) && !cronLog) {
     cronLog = true;
     if(cronLog) console.log(`[LOG]     ${now()}: 🌈  Daily Breakfast time reached again.`);
   }
 
-  if(range.contains(moment().utc(1))) {
+  if(range.contains(now())) {
     if(cronLog) console.log(`[LOG]     ${now()}: 📨  Checking Mailbox...`);
     wrappedFunction();
   } else {
     if(cronLog) console.warn(`[WARN]    ${now()}: ☝️  Breakfast Time is Over.`);
   }
-
-  if(moment().utc(1) > endTime) {
+  
+  if(now() > endTime) {
     if(cronLog) console.warn(`[WARN]    ${now()}: 💤  Daily Endtime reached. Going to sleep. `);
     cronLog = false;
   }
   
 });
 
-
-// Debug:
-// setTimeout(() => {
-//   startTime = moment().utc(1);
-//   endTime = moment(startTime).add(3, 'minutes');
-//   range = moment.range(startTime, endTime);
-//   console.log('changed range!', range);
-// }, 300000);
