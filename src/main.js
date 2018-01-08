@@ -4,7 +4,7 @@ let util = require('util'); // console.log(util.inspect(myObject, false, null));
 let request = require('request-promise');
 let schedule = require('node-schedule'); // for doc see: https://github.com/node-schedule/node-schedule
 let httpHeader = require('../environment/ifttt.header.json');
-let coreLib = require('./lib/core');
+let core = require('./lib/core');
 
 let Moment = require('moment');
 let MomentRange = require('moment-range');
@@ -22,12 +22,12 @@ let secretHeaderInformation = {
 };
 
 // config coreLib
-coreLib.configCore(moment);
+core.configCore(moment);
 
 // Timing 
 // Mo - Fr, 9:45 - 10:30, every minute
-let startTime = coreLib.now({hour: 9, minute: 35});
-let endTime = coreLib.now({hour: 10, minute: 30});
+let startTime = core.now({hour: 9, minute: 35});
+let endTime = core.now({hour: 10, minute: 30});
 let range = moment.range(startTime, endTime);
 
 // Default values 
@@ -35,8 +35,8 @@ let cronLog = true; // responsible for showing log messages
 let ping = 0; // timing indicator for login out a ping message to track if application is still running
 
 // config the options object based on environment.
-options = coreLib.setOptions(
-  coreLib.setUrl(environment),
+options = core.setOptions(
+  core.setUrl(environment),
   httpHeader,
   secretHeaderInformation
 );
@@ -52,7 +52,7 @@ function catchErrors(fn) {
         return;
       }
 
-      console.error(`[ERROR]   ${coreLib.now()}: 🚨  ${err.statusCode} ${err.statusMessage}`);
+      core.logger.err(`${err.statusCode} ${err.statusMessage}`);
       process.exit(1);
     });
   }
@@ -61,14 +61,14 @@ function catchErrors(fn) {
 // actual request.
 async function doRequest() {
   const response = await request(options);
-  console.log(`[SUCCESS] ${coreLib.now()}: ✅  ${response.statusCode} ${response.statusMessage}`);
+  core.logger.success(`${response.statusCode} ${response.statusMessage}`);
 }
 
 // returns the current time with prefered configuration
-// DEPRECATED
+// 🔥 DEPRECATED
 function now(certainMoment) {
+  core.logger.warn('🔥', `This function is DEPRECATED. Use core.now() instead.`);
   // TODO: Add summer-time + 1
-  console.warn(`[WARN]    ${coreLib.now()}: 🔥  This function is DEPRECATED. Please use coreLib.now() instead.`);
   return certainMoment ? 
     moment.utc(certainMoment).format('YYYY-MM-DD HH:mm') :
     moment.utc().utcOffset('+01:00').format('YYYY-MM-DD HH:mm');
@@ -80,31 +80,31 @@ function now(certainMoment) {
  */
 const wrappedFunction = catchErrors(doRequest);
 
-console.log(`[LOG]     ${coreLib.now()}: 🚀  Omnomnom ${process.env.ENV} Cronjob started.`);
+core.logger.log('🚀', `Omnomnom ${process.env.ENV} Cronjob started.`);
 
 schedule.scheduleJob({
   rule: '*/1 * * * 1-5' 
 }, () => {
 
-  if(range.contains(coreLib.now()) && !cronLog) {
+  if(range.contains(core.now()) && !cronLog) {
     cronLog = true;
-    if(cronLog) console.log(`[LOG]     ${coreLib.now()}: 🌈  Daily Breakfast time reached again.`);
+    if(cronLog) core.logger.log('🌈', `Daily Breakfast time reached again.`);
   }
 
-  if(range.contains(coreLib.now())) {
-    if(cronLog) console.log(`[LOG]     ${coreLib.now()}: 📨  Checking Mailbox...`);
+  if(range.contains(core.now())) {
+    if(cronLog) core.logger.log('📨', `Checking Mailbox...`);
     wrappedFunction();
   } else {
-    if(cronLog) console.warn(`[WARN]    ${coreLib.now()}: ☝️  Breakfast Time is Over.`);
+    if(cronLog) core.logger.warn('️️️️☝️', `Breakfast Time is Over.`);
   }
   
-  if(coreLib.now() > endTime) {
-    if(cronLog) console.warn(`[LOG]     ${coreLib.now()}: 💤  Daily Endtime reached. Going to sleep. `);
+  if(core.now() > endTime) {
+    if(cronLog) core.logger.log('💤', `Daily Endtime reached. Going to sleep.`);
     cronLog = false;
   }
 
   if(ping >= 60) {
-    console.warn(`[LOG]     ${coreLib.now()}: 📣  Still running.`);
+    core.logger.log('📣', `Still running.`);
     ping = 0;
   }
   

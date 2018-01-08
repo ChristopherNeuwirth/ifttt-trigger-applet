@@ -57,7 +57,29 @@ core.configCore = (moment) => {
  */
 core.now = (certainMoment) => {
   // TODO: Add summer-time + 1
-  return certainMoment ? 
-    _moment.utc(certainMoment).format('YYYY-MM-DD HH:mm') :
-    _moment.utc().utcOffset('+01:00').format('YYYY-MM-DD HH:mm');
+  return certainMoment ? _moment.utc(certainMoment) : _moment.utc().utcOffset('+01:00');
+}
+
+
+core.logMessage = (type, emoji, message) => {
+
+  emoji === 'err' ? emoji = '🚨' : emoji;
+  emoji === 'success' ? emoji = '✅' : emoji;
+
+  console.log(`${type}${core.now().format('YYYY-MM-DD HH:mm')}: ${emoji}  ${message}`);
+}
+
+core.logger = {
+  log: (emoji, message) => {
+    return core.logMessage('[LOG]     ', emoji, message);
+  },
+  warn: (emoji, message) => {
+    return core.logMessage('[WARN]    ', emoji, message);
+  },
+  err: (message) => {
+    return core.logMessage('[ERROR]   ', 'err', message);
+  },
+  success: (message) => {
+    return core.logMessage('[SUCCESS] ', 'success', message);
+  }
 }
