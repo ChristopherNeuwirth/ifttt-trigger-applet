@@ -72,6 +72,7 @@ let endTime = now({hour: 10, minute: 30});
 let range = moment.range(startTime, endTime);
 
 let cronLog = true;
+let ping = 0;
 
 console.log(`[LOG]     ${now()}: 🚀  Omnomnom ${process.env.ENV} Cronjob started.`);
 
@@ -92,9 +93,17 @@ schedule.scheduleJob({
   }
   
   if(now() > endTime) {
-    if(cronLog) console.warn(`[WARN]    ${now()}: 💤  Daily Endtime reached. Going to sleep. `);
+    if(cronLog) console.warn(`[LOG]     ${now()}: 💤  Daily Endtime reached. Going to sleep. `);
     cronLog = false;
   }
+
+  console.warn(`[LOG]     ${now()}: ${ping}`);
+  if(ping >= 3) {
+    console.warn(`[LOG]     ${now()}: 📣  Still running.`);
+    ping = 0;
+  }
+
+  ping++;
   
 });
 
