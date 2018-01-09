@@ -88,5 +88,8 @@ core.logger = {
   },
   success: (message) => {
     return core.logMessage('[SUCCESS] ', 'success', message);
+  },
+  debug: (emoji, message) => {
+    return core.logMessage('[DEBUG]   ', emoji, message);
   }
 }

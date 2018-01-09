@@ -77,8 +77,8 @@ schedule.scheduleJob({
 }, () => {
 
   if(debug) {
-    core.logger.log('🕐', `Is_In_Range:   ${range.contains(core.now())} - Timestamp: ${core.now()}`);
-    core.logger.log('🕐', `Now > endTime: ${core.now() > endTime} - Timestamp: ${core.now()} - EndTime: ${endTime}`);
+    core.logger.debug('🕐', `Is_In_Range:   ${range.contains(core.now())} - Timestamp: ${core.now()}`);
+    core.logger.debug('🕐', `Now > endTime: ${core.now() > endTime} - Timestamp: ${core.now()} - EndTime: ${endTime}`);
   }
 
   if(range.contains(core.now()) && !cronLog) {
