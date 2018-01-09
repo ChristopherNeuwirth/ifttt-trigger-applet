@@ -63,16 +63,6 @@ async function doRequest() {
   core.logger.success(`${response.statusCode} ${response.statusMessage}`);
 }
 
-// returns the current time with prefered configuration
-// 🔥 DEPRECATED
-function now(certainMoment) {
-  core.logger.warn('🔥', `This function is DEPRECATED. Use core.now() instead.`);
-  // TODO: Add summer-time + 1
-  return certainMoment ? 
-    moment.utc(certainMoment).format('YYYY-MM-DD HH:mm') :
-    moment.utc().utcOffset('+01:00').format('YYYY-MM-DD HH:mm');
-}
-
 /**
  * Main Application
  * First the options are set based on the environment (prod, dev) and then the request is triggered.
