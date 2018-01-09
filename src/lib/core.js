@@ -57,7 +57,14 @@ core.configCore = (moment) => {
  */
 core.now = (certainMoment) => {
   // TODO: Add summer-time + 1
-  return certainMoment ? _moment.utc(certainMoment) : _moment.utc().utcOffset('+01:00');
+  let momentObject;
+
+  certainMoment ? 
+    momentObject = _moment.utc(certainMoment).subtract(1, 'hours') : 
+    momentObject = _moment.utc();
+  
+  return momentObject.utcOffset('+01:00'); 
+  
 }
 
 

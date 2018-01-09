@@ -32,7 +32,7 @@ let range = moment.range(startTime, endTime);
 
 // Default values 
 let cronLog = true; // responsible for showing log messages 
-let ping = 0; // timing indicator for login out a ping message to track if application is still running
+let debug = true; // responsible for showing debug messages
 
 // config the options object based on environment.
 options = core.setOptions(
@@ -53,7 +53,6 @@ function catchErrors(fn) {
       }
 
       core.logger.err(`${err.statusCode} ${err.statusMessage}`);
-      process.exit(1);
     });
   }
 }
@@ -81,10 +80,16 @@ function now(certainMoment) {
 const wrappedFunction = catchErrors(doRequest);
 
 core.logger.log('🚀', `Omnomnom ${process.env.ENV} Cronjob started.`);
+if(debug) console.log('Range:', range);
 
 schedule.scheduleJob({
   rule: '*/1 * * * 1-5' 
 }, () => {
+
+  if(debug) {
+    core.logger.log('🕐', `Is_In_Range:   ${range.contains(core.now())} - Timestamp: ${core.now()}`);
+    core.logger.log('🕐', `Now > endTime: ${core.now() > endTime} - Timestamp: ${core.now()} - EndTime: ${endTime}`);
+  }
 
   if(range.contains(core.now()) && !cronLog) {
     cronLog = true;
@@ -103,12 +108,4 @@ schedule.scheduleJob({
     cronLog = false;
   }
 
-  if(ping >= 60) {
-    core.logger.log('📣', `Still running.`);
-    ping = 0;
-  }
-  
-  ping++;
-  
 });
-
