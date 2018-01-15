@@ -2,8 +2,13 @@ let fs = require('fs');
 let path = require('path');
 let util = require('util'); // console.log(util.inspect(myObject, false, null));
 let request = require('request-promise');
+let schedule = require('node-schedule'); // for doc see: https://github.com/node-schedule/node-schedule
 let httpHeader = require('../environment/ifttt.header.json');
-let coreLib = require('./lib/core');
+let core = require('./lib/core');
+
+let Moment = require('moment');
+let MomentRange = require('moment-range');
+let moment = MomentRange.extendMoment(Moment);
 
 require('dotenv').config({path: path.resolve(__dirname, '..', 'environment/.env')});
 
@@ -16,9 +21,24 @@ let secretHeaderInformation = {
   referer: process.env.REFERER
 };
 
+// config coreLib
+core.configCore(moment);
+
+// Timing start, end
+core.setTimeIntervall(
+  {hour: 9, minute: 35},
+  {hour: 10, minute: 30}
+);
+
+let range = core.setRange();
+
+// Default values 
+let cronLog = true; // responsible for showing log messages 
+let debug = true; // responsible for showing debug messages
+
 // config the options object based on environment.
-options = coreLib.setOptions(
-  coreLib.setUrl(environment),
+options = core.setOptions(
+  core.setUrl(environment),
   httpHeader,
   secretHeaderInformation
 );
@@ -31,11 +51,11 @@ function catchErrors(fn) {
       // api returns 422 if the applet is triggered by ifttt itself.
       // The app should not stop if this case occurs. 
       if(err.statusCode === 422) {
+        core.logger.warn('️️️️🙇', `Script Conflict. IFTTT just executed itself.`);
         return;
       }
 
-      console.error(err.statusCode, err.statusMessage);
-      process.exit(1);
+      core.logger.err(`${err.statusCode} ${err.statusMessage}`);
     });
   }
 }
@@ -43,7 +63,7 @@ function catchErrors(fn) {
 // actual request.
 async function doRequest() {
   const response = await request(options);
-  console.log(response.statusCode, response.statusMessage);
+  core.logger.success(`${response.statusCode} ${response.statusMessage}`);
 }
 
 /**
@@ -52,8 +72,33 @@ async function doRequest() {
  */
 const wrappedFunction = catchErrors(doRequest);
 
-console.log('Starting ...');
-wrappedFunction();
-setInterval(wrappedFunction, 60000); // 1 min
+core.logger.log('🚀', `Some nice Applet ${process.env.ENV} Cronjob started.`);
 
-coreLib.terminate(2700000); // 45 min
+schedule.scheduleJob({
+  rule: '*/1 * * * *' 
+}, () => {
+
+  // Example for triggering an action during the time interval which was set in core.setTimeIntervall
+
+  if(range.contains(core.now()) && !cronLog) {
+    cronLog = true;
+    if(cronLog) core.logger.log('🌈', `Daily time interval reached again.`);
+  }
+
+  if(range.contains(core.now())) {
+    if(cronLog) core.logger.log('📨', `Checking Mailbox...`);
+
+    // actual action
+    wrappedFunction();
+  } else {
+    if(cronLog) core.logger.warn('️️️️☝️', `Time is Over.`);
+  }
+  
+  if(core.now() > core.now(core.getTimeIntervall().endTime)) {
+    if(cronLog) core.logger.log('🕔', `Time set for the next day.`);
+    range = core.updateRange();
+    if(cronLog) core.logger.log('💤', `Daily Endtime reached. Going to sleep.`);
+    cronLog = false;
+  }
+
+});

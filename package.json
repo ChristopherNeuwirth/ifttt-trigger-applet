@@ -1,11 +1,11 @@
 {
   "name": "ifttt-trigger-applet",
   "version": "0.4.0",
-  "description": "Trigger ifttt applets by node.",
-  "main": "src/main.js",
+  "description": "Trigger ifttt applets by node and deploy them as cron jobs to zeit.co.",
+  "main": "index.js",
   "scripts": {
-    "start": "ENV=PROD node src/main.js",
-    "start:dev": "ENV=DEV node src/main.js"
+    "start": "micro",
+    "dev": "micro-dev"
   },
   "keywords": [
     "node",
@@ -16,11 +16,16 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^4.0.0",
+    "micro": "^9.0.2",
+    "moment": "^2.19.3",
+    "moment-range": "^3.1.0",
+    "node-schedule": "^1.2.5",
     "request": "^2.83.0",
     "request-promise": "^4.2.2",
     "util": "^0.10.3"
   },
   "devDependencies": {
-    "husky": "^0.13.4"
+    "husky": "^0.13.4",
+    "micro-dev": "^2.1.2"
   }
 }
