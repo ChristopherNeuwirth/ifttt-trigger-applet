@@ -5,6 +5,7 @@ require('dotenv').config({path: path.resolve(__dirname, 'environment/.env')});
 let cronJob = undefined;
 
 // Wrapper for creating the forked child process which represents the actual cron job instance. 
+// TODO: Make environment configurable
 function forkChildProcess() {
   return fork('./src/main.js', [], {
     env: {

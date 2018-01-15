@@ -24,11 +24,13 @@ let secretHeaderInformation = {
 // config coreLib
 core.configCore(moment);
 
-// Timing 
-// Mo - Fr, 9:45 - 10:30, every minute
-let startTime = core.now({hour: 9, minute: 35});
-let endTime = core.now({hour: 10, minute: 30});
-let range = moment.range(startTime, endTime);
+// Timing start, end
+core.setTimeIntervall(
+  {hour: 9, minute: 35},
+  {hour: 10, minute: 30}
+);
+
+let range = core.setRange();
 
 // Default values 
 let cronLog = true; // responsible for showing log messages 
@@ -49,6 +51,7 @@ function catchErrors(fn) {
       // api returns 422 if the applet is triggered by ifttt itself.
       // The app should not stop if this case occurs. 
       if(err.statusCode === 422) {
+        core.logger.warn('️️️️🙇', `Script Conflict. IFTTT just executed itself.`);
         return;
       }
 
@@ -69,31 +72,31 @@ async function doRequest() {
  */
 const wrappedFunction = catchErrors(doRequest);
 
-core.logger.log('🚀', `Omnomnom ${process.env.ENV} Cronjob started.`);
-if(debug) console.log('Range:', range);
+core.logger.log('🚀', `Some nice Applet ${process.env.ENV} Cronjob started.`);
 
 schedule.scheduleJob({
-  rule: '*/1 * * * 1-5' 
+  rule: '*/1 * * * *' 
 }, () => {
 
-  if(debug) {
-    core.logger.debug('🕐', `Is_In_Range:   ${range.contains(core.now())} - Timestamp: ${core.now()}`);
-    core.logger.debug('🕐', `Now > endTime: ${core.now() > endTime} - Timestamp: ${core.now()} - EndTime: ${endTime}`);
-  }
+  // Example for triggering an action during the time interval which was set in core.setTimeIntervall
 
   if(range.contains(core.now()) && !cronLog) {
     cronLog = true;
-    if(cronLog) core.logger.log('🌈', `Daily Breakfast time reached again.`);
+    if(cronLog) core.logger.log('🌈', `Daily time interval reached again.`);
   }
 
   if(range.contains(core.now())) {
     if(cronLog) core.logger.log('📨', `Checking Mailbox...`);
+
+    // actual action
     wrappedFunction();
   } else {
-    if(cronLog) core.logger.warn('️️️️☝️', `Breakfast Time is Over.`);
+    if(cronLog) core.logger.warn('️️️️☝️', `Time is Over.`);
   }
   
-  if(core.now() > endTime) {
+  if(core.now() > core.now(core.getTimeIntervall().endTime)) {
+    if(cronLog) core.logger.log('🕔', `Time set for the next day.`);
+    range = core.updateRange();
     if(cronLog) core.logger.log('💤', `Daily Endtime reached. Going to sleep.`);
     cronLog = false;
   }

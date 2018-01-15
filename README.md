@@ -1,6 +1,11 @@
 # IFTTT Trigger Applet - with now Deployment
 
+This applet can be used as nodejs micro service wich runs permanently (cronjob) on a zeit.co instance as cloud service.
+It has the ability to trigger a certain action created with IFTTT to do anything you want. 
+
 ## Getting started
+
+Install now: https://zeit.co 
 
 Install dependencies.
 ```
@@ -40,9 +45,16 @@ now scale [ID_GIVEN] 1
 curl [ID_GIVEN]
 ```
 
+The scale step is required to disable the autoscaling which causes the cloud instance to shut down if its not used for some time. 
+
 Check Logs
 ```
 now logs [ID_GIVEN] 
+```
+
+List now instance
+```
+now ls
 ```
 
 ## Job Handling
@@ -55,4 +67,5 @@ curl [ID_GIVEN] -H 'action: RESTART'
 Receive Information about the Job
 ```
 curl [ID_GIVEN] -H 'action: INFO'
+now logs [ID_GIVEN] 
 ```

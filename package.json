@@ -1,13 +1,11 @@
 {
   "name": "ifttt-trigger-applet",
   "version": "0.4.0",
-  "description": "Trigger ifttt applets by node.",
+  "description": "Trigger ifttt applets by node and deploy them as cron jobs to zeit.co.",
   "main": "index.js",
   "scripts": {
     "start": "micro",
-    "dev": "micro-dev",
-    "start:prod": "ENV=PROD node src/main.js",
-    "start:dev": "ENV=DEV node src/main.js"
+    "dev": "micro-dev"
   },
   "keywords": [
     "node",
