@@ -1,6 +1,6 @@
 # IFTTT Trigger Applet - with now Deployment
 
-This applet can be used as nodejs micro service wich runs permanently (cronjob) on a zeit.co instance as cloud service.
+This applet can be used as nodejs micro service which runs permanently (cronjob) on a zeit.co instance as cloud service.
 It has the ability to trigger a certain action created with IFTTT to do anything you want. 
 
 ## Getting started
@@ -37,7 +37,7 @@ npm run dev
 
 ## Now deployment 
 
-Deploy
+Deploy to zeit.co
 ```
 now --dotenv environment/.env --public
 now scale [ID_GIVEN] 1
